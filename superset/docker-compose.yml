@@ -1,0 +1,187 @@
+version: '3.3'
+
+services:
+  jitsuServer:
+    image: jitsuai/compute_ai:jitsu-server-33c93b76798e0d0b5474c00ba8a1c32ca44c10ca
+    container_name: jitsuServer
+    depends_on:
+      - demoDatasetDownload
+    ulimits:
+      nofile: 1048576
+      memlock: -1
+      core: 0
+    expose:
+      - 50051
+    ports:
+      - "50051:50051"
+    environment:
+      - JITSU_SWAP_PATH=${JITSU_SWAP_PATH}
+      - JITSU_SERVER_BUILD=${JITSU_SERVER_BUILD}
+      - CONTAINER_NAME=jitsuServer
+      - TERMINFO=/usr/share/terminfo # To be able to run jitsu_top.py from within the container
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp=unconfined
+    volumes:
+      - ../config/jitsuServer/jitsuServerConfig.json:/opt/jitsu/jitsuServer.json
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/jitsu/logs/:/opt/jitsu/logs/
+      - /opt/jitsu/jitsu-warehouse:/tmp/jitsu-warehouse
+      - ./dataset:/dataset
+
+  jitsuOrchestrator:
+    image: jitsuai/compute_ai:jdbc-server-33c93b76798e0d0b5474c00ba8a1c32ca44c10ca
+    container_name: jitsuOrchestrator
+    depends_on:
+      - jitsuServer
+      - demoDatasetDownload
+    environment:
+      - GRPC_SERVER_HOST=jitsuServer
+      - GRPC_SERVER_PORT=50051
+      - CONTAINER_NAME=jitsuOrchestrator
+      - JDBC_SERVER_TRANSPORT_MODE=TCP
+      - JDBC_AUTH=PAM
+      - HIVE_SERVER2_IDLE_SESSION_TIMEOUT_SECONDS=${HIVE_SERVER2_IDLE_SESSION_TIMEOUT_SECONDS}
+      - HIVE_SERVER2_SESSION_CHECK_INTERVAL_SECONDS=${HIVE_SERVER2_SESSION_CHECK_INTERVAL_SECONDS}
+      - JEC_INSTANCE_CHECK_INTERVAL_SECONDS=${JEC_INSTANCE_CHECK_INTERVAL_SECONDS}
+      - JDBC_AUTH=PASSWORD
+      - JDBC_PASSWORD=${JDBC_PASSWORD}
+      - JDBC_PORT=10000
+      - DASHBOARD_PORT=8080
+      - WAREHOUSE_LOCATION=${JEC_WAREHOUSE_LOCATION}
+      - METASTORE_LOCATION=${JEC_METASTORE_LOCATION}
+      - JEC_UNIQUE_TAG_VALUE=${JEC_UNIQUE_TAG_VALUE}
+      - SPARK_LOG_DIR=/opt/jitsu/logs
+      - ENABLE_CACHING=${ENABLE_CACHING}
+      - CACHE_CLUSTER_ID=${CACHE_CLUSTER_ID}
+      - CACHE_EXPIRY_TIME=${CACHE_EXPIRY_TIME}
+      - MAX_CACHE_RESULT_SET_SIZE_MB=${MAX_CACHE_RESULT_SET_SIZE_MB}
+      - JITSU_CUSTOMER_ID=${JITSU_CUSTOMER_ID}
+      - JITSU_CUSTOMER_ATTRIBUTE=${JITSU_CUSTOMER_ATTRIBUTE}
+      - JEC_ORCHESTRATOR_INSTANCE_TYPE=${JEC_ORCHESTRATOR_INSTANCE_TYPE}
+      - MAX_SESSIONS_PER_NODE=${MAX_SESSIONS_PER_NODE}
+      - PERCENT_MEMROY_TO_ALLOCATE_TO_SPARK_DRIVER=90
+      - GET_SESSION_TIMEOUT_SECONDS=${GET_SESSION_TIMEOUT_SECONDS}
+    expose:
+      - 10000
+      - 8080
+    ports:
+      - "10000:10000"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/jitsu/logs/:/opt/jitsu/logs/
+      - /opt/jitsu/jitsu-metastore:/tmp/jitsu-metastore
+      - /opt/jitsu/jitsu-warehouse:/tmp/jitsu-warehouse
+      - ./dataset:/dataset
+
+  redis:
+    image: redis:7
+    container_name: superset_cache
+    restart: unless-stopped
+    volumes:
+      - redis:/data
+
+  db:
+    env_file: docker/.env-non-dev
+    image: postgres:15
+    container_name: superset_db
+    restart: unless-stopped
+    volumes:
+      - db_home:/var/lib/postgresql/data
+      - ./docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+
+  superset:
+    env_file: docker/.env-non-dev
+    image: apachesuperset.docker.scarf.sh/apache/superset:${TAG:-latest-dev}
+    container_name: superset_app
+    command: ["/app/docker/docker-bootstrap.sh", "app-gunicorn"]
+    user: "root"
+    restart: unless-stopped
+    ports:
+      - 8088:8088
+    depends_on:
+      - db
+      - redis
+      - jitsuOrchestrator
+    volumes:
+      - ./docker:/app/docker
+      - superset_home:/app/superset_home
+
+  superset-init:
+    image: apachesuperset.docker.scarf.sh/apache/superset:${TAG:-latest-dev}
+    container_name: superset_init
+    command: ["/app/docker/docker-init.sh"]
+    env_file: docker/.env-non-dev
+    depends_on:
+      - db
+      - redis
+    user: "root"
+    volumes:
+      - ./docker:/app/docker
+      - superset_home:/app/superset_home
+    healthcheck:
+      disable: true
+
+  superset-worker:
+    image: apachesuperset.docker.scarf.sh/apache/superset:${TAG:-latest-dev}
+    container_name: superset_worker
+    command: ["/app/docker/docker-bootstrap.sh", "worker"]
+    env_file: docker/.env-non-dev
+    restart: unless-stopped
+    depends_on:
+      - db
+      - redis
+    user: "root"
+    volumes:
+      - ./docker:/app/docker
+      - superset_home:/app/superset_home
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "celery -A superset.tasks.celery_app:app inspect ping -d celery@$$HOSTNAME",
+        ]
+
+  superset-worker-beat:
+    image: apachesuperset.docker.scarf.sh/apache/superset:${TAG:-latest-dev}
+    container_name: superset_worker_beat
+    command: ["/app/docker/docker-bootstrap.sh", "beat"]
+    env_file: docker/.env-non-dev
+    restart: unless-stopped
+    depends_on:
+      - db
+      - redis
+    user: "root"
+    volumes:
+      - ./docker:/app/docker
+      - superset_home:/app/superset_home
+    healthcheck:
+      disable: true
+
+  demoDatasetDownload:
+    image: node:14-alpine
+    entrypoint: ["/bin/sh","-c"]
+    volumes:
+      - ./dataset:/dataset/
+    command:
+      - |
+        echo "Install AWS CLI"
+        apk update
+        apk add python3 py3-pip groff less openssl ca-certificates
+        pip3 install awscli
+        aws --version
+        echo "Download TPCH & TPCDS SF1 dataset"
+        mkdir -p /dataset/tpch/sf1
+        aws s3 cp s3://jitsuai-public-datasets/tpch/sf1/ /dataset/tpch/sf1 --recursive
+        mkdir -p /dataset/tpcds/sf1
+        aws s3 cp s3://jitsuai-public-datasets/tpcds/sf1/ /dataset/tpcds/sf1 --recursive
+
+volumes:
+  superset_home:
+    external: false
+  db_home:
+    external: false
+  redis:
+    external: false
