@@ -2,6 +2,12 @@
 
 This integrates ComputeAI with Superset
 
+<div align="left">
+      <a href="https://www.youtube.com/watch?v=6XZMiQaHa24">
+         <img src="https://img.youtube.com/vi/6XZMiQaHa24/0.jpg" style="width:50%;">
+      </a>
+</div>
+
 ## Install Docker on your machine
 
 https://docs.docker.com/engine/install/
