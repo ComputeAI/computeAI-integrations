@@ -39,6 +39,13 @@ password: infinite-scale
 ```
 
 ## Demo notebooks
+
+<div align="left">
+      <a href="https://www.youtube.com/watch?v=Va-O-G0bNzg">
+         <img src="https://img.youtube.com/vi/Va-O-G0bNzg/0.jpg" style="width:50%;">
+      </a>
+</div>
+
 * tpchDemo
 
 Has all 22 TPCH queries for SF1 dataset in a public S3 bucket.
@@ -47,7 +54,10 @@ Has all 22 TPCH queries for SF1 dataset in a public S3 bucket.
 
 Has all 22 TPCH queries for SF1 dataset in a filesystem.
 
-
 * tpcdsDemo
 
 Has all 99 TPCDS queries for SF1 dataset in a public S3 bucket. 
+
+* tpcdsFileDataset
+
+Has all 99 TPCDS queries for SF1 dataset in a filesystem.
