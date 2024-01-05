@@ -2,6 +2,12 @@
 
 This integrates ComputeAI with Jupyter Notebook
 
+<div align="left">
+      <a href="https://www.youtube.com/watch?v=Va-O-G0bNzg">
+         <img src="https://img.youtube.com/vi/Va-O-G0bNzg/0.jpg" style="width:50%;">
+      </a>
+</div>
+
 ## Install Docker on your machine
 
 https://docs.docker.com/engine/install/
@@ -39,12 +45,6 @@ password: infinite-scale
 ```
 
 ## Demo notebooks
-
-<div align="left">
-      <a href="https://www.youtube.com/watch?v=Va-O-G0bNzg">
-         <img src="https://img.youtube.com/vi/Va-O-G0bNzg/0.jpg" style="width:50%;">
-      </a>
-</div>
 
 * tpchDemo
 
