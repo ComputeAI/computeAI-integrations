@@ -1,8 +1,14 @@
+<div align="center">
+  <img src="https://github.com/ComputeAI/computeAI-integrations/blob/main/logo/ComputeAI-Logo.png" height="100">
+</div>
+<br>
+
 <p align="center">
   <a href="https://discord.gg/wemNjP3tUd">
     <img src="https://shields.io/discord/909674491309850675" alt="discord" />
   </a>
 </p>
+
 
 # ComputeAI
 
