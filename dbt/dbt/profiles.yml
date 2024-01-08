@@ -1,0 +1,16 @@
+computeai:
+  target: dev
+  outputs:
+    dev:
+      type: spark
+      host: jitsuOrchestrator
+      port: 10000
+      threads: 4
+      schema: default
+      method: thrift
+      user: computeai
+      password: infinite-scale
+      use_ssl: false
+      auth: CUSTOM
+      connect_retries: 3
+      connect_timeout: 10

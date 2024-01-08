@@ -46,18 +46,18 @@ password: infinite-scale
 
 ## Demo notebooks
 
-* tpchDemo
+- tpchDemo
 
 Has all 22 TPCH queries for SF1 dataset in a public S3 bucket.
 
-* tpchFileDataset
+- tpchFileDataset
 
 Has all 22 TPCH queries for SF1 dataset in a filesystem.
 
-* tpcdsDemo
+- tpcdsDemo
 
 Has all 99 TPCDS queries for SF1 dataset in a public S3 bucket. 
 
-* tpcdsFileDataset
+- tpcdsFileDataset
 
 Has all 99 TPCDS queries for SF1 dataset in a filesystem.
