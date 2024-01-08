@@ -38,6 +38,14 @@ Value prop:
 
 Simply download the container, develop using GBs of data, and run 1000s of concurrent jobs with TBs of data. There is no management or tuning needed. ComputeAI runs reliably and unattended like an OS.
 
+## Join the ComputeAI Community
+
+- Be part of the conversation in the [ComputeAI Community Discord](https://discord.gg/wemNjP3tUd)
+
+## Reporting bugs and contributing code
+
+- Want to report a bug or request a feature? Let us know on [Discord](https://discord.gg/wemNjP3tUd), or open [an issue](https://github.com/ComputeAI/computeAI-integrations/issues/new)
+
 ## Contact Us
 
 To find out more, please check out our website at https://compute.ai/
@@ -45,5 +53,3 @@ To find out more, please check out our website at https://compute.ai/
 If you like the sound of this and are interested in joining our team, please reach out to us at contact@compute.ai. We'd love to chat! We're a small team of 4 developers and always looking to work with other talented and fun people.
 
 Lastly, if something doesn't work or if you have any questions, please email us at contact@compute.ai. We are more than happy to help.
-
-
