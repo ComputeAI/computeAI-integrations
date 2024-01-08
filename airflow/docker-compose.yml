@@ -1,0 +1,228 @@
+version: "3.3"
+
+networks:
+  computeai:
+
+services:
+  postgres-airflow:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    volumes:
+      - ./airflow/dags:/usr/local/airflow/dags
+      - ./airflow/logs:/usr/local/airflow/logs
+      - ./airflow/plugins:/usr/local/airflow/plugins
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+    networks:
+      - computeai
+
+  airflow-init:
+    image: apache/airflow:2.8.0  # Use the same image as your airflow service
+    depends_on:
+      - postgres-airflow
+      - dbt-spark
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres-airflow:5432/airflow
+      - AIRFLOW__CORE__DAGS_FOLDER=/usr/local/airflow/dags
+      - AIRFLOW__CORE__PLUGINS_FOLDER=/usr/local/airflow/plugins
+    volumes:
+      - ./airflow/dags:/usr/local/airflow/dags
+      - ./airflow/logs:/usr/local/airflow/logs
+      - ./airflow/plugins:/usr/local/airflow/plugins
+    networks:
+      - computeai
+    command: airflow db migrate
+
+  airflow-scheduler:
+    image: apache/airflow:2.8.0  # Use the same image as your airflow service
+    depends_on:
+      - postgres-airflow
+      - airflow-init
+      - dbt-spark
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres-airflow:5432/airflow
+      - AIRFLOW__CORE__DAGS_FOLDER=/usr/local/airflow/dags
+      - AIRFLOW__CORE__PLUGINS_FOLDER=/usr/local/airflow/plugins
+      - DBT_PROFILES_DIR=/usr/app/.dbt/
+      - DBT_PROJECT_DIR=/usr/app/computeai
+    volumes:
+      - ./airflow/dags:/usr/local/airflow/dags
+      - ./airflow/logs:/usr/local/airflow/logs
+      - ./airflow/plugins:/usr/local/airflow/plugins
+      - ./dbt/dbt:/usr/app/  # Mount your dbt project directory
+      - ./dbt/profiles.yml:/usr/app/.dbt/profiles.yml
+      - ./dbt/tpch:/usr/app/tpch
+    networks:
+      - computeai
+    command: bash -c "airflow db migrate && pip install dbt-spark dbt-spark[PyHive] && airflow scheduler"
+
+  airflow:
+    image: apache/airflow:2.8.0
+    depends_on:
+      - postgres-airflow
+      - airflow-init
+      - airflow-scheduler
+      - dbt-spark
+    ports:
+      - "8088:8088"
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres-airflow:5432/airflow
+      - AIRFLOW__CORE__DAGS_FOLDER=/usr/local/airflow/dags
+      - AIRFLOW__CORE__PLUGINS_FOLDER=/usr/local/airflow/plugins
+      - DBT_PROFILES_DIR=/usr/app/.dbt/
+      - DBT_PROJECT_DIR=/usr/app/computeai
+    volumes:
+      - ./airflow/dags:/usr/local/airflow/dags
+      - ./airflow/logs:/usr/local/airflow/logs
+      - ./airflow/plugins:/usr/local/airflow/plugins
+      - ./dbt/dbt:/usr/app/  # Mount your dbt project directory
+      - ./dbt/profiles.yml:/usr/app/.dbt/profiles.yml
+      - ./dbt/tpch:/usr/app/tpch
+    networks:
+      - computeai
+    command: bash -c "airflow db migrate && airflow users create --username \"computeai\" --password \"infinite-scale\" --firstname computeai --lastname computeai --role Admin --email admin@compute.ai && airflow webserver -p 8088"
+
+  notebook:
+    container_name: jupyterNotebook
+    depends_on:
+      - jitsuOrchestrator
+    labels:
+      description: Intel Python 2 using Jupyter Notebooks
+      name: jupyter notebook
+    ports:
+      - "8888:8888"
+    volumes:
+      - ~/notebooks:/home/notebooks
+      - ./dataset:/dataset
+      - ./dbt/dbt:/usr/app/  # Mount your dbt project directory
+      - ./dbt/profiles.yml:/usr/app/.dbt/profiles.yml
+      - ./dbt/tpch:/usr/app/tpch
+    build: jupyter/.
+    command: jupyter notebook --NotebookApp.token='infinite-scale'
+    environment:
+      - DBT_PROFILES_DIR=/usr/app/.dbt/
+    networks:
+      - computeai
+
+  dbt-spark:
+    container_name: dbt-spark
+    labels:
+      description: DBT for Spark
+      name: dbt spark
+    build: dbt/.
+    depends_on:
+      - jitsuOrchestrator
+    volumes:
+      - ./dataset:/dataset
+      - ./dbt/dbt:/usr/app/  # Mount your dbt project directory
+      - ./dbt/profiles.yml:/usr/app/.dbt/profiles.yml
+      - ./dbt/tpch:/usr/app/tpch
+    environment:
+      - DBT_PROFILES_DIR=/usr/app/.dbt/
+    networks:
+      - computeai
+
+  jitsuServer:
+    image: jitsuai/compute_ai:jitsu-server-33c93b76798e0d0b5474c00ba8a1c32ca44c10ca
+    container_name: jitsuServer
+    depends_on:
+      - demoDatasetDownload
+    ulimits:
+      nofile: 1048576
+      memlock: -1
+      core: 0
+    expose:
+      - 50051
+    ports:
+      - "50051:50051"
+    environment:
+      - JITSU_SWAP_PATH=${JITSU_SWAP_PATH}
+      - JITSU_SERVER_BUILD=${JITSU_SERVER_BUILD}
+      - CONTAINER_NAME=jitsuServer
+      - TERMINFO=/usr/share/terminfo # To be able to run jitsu_top.py from within the container
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp=unconfined
+    volumes:
+      - ../config/jitsuServer/jitsuServerConfig.json:/opt/jitsu/jitsuServer.json
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/jitsu/jitsu-warehouse:/tmp/jitsu-warehouse
+      - /opt/jitsu/logs/:/opt/jitsu/logs/
+      - ./dataset:/dataset
+    networks:
+      - computeai
+
+  jitsuOrchestrator:
+    image: jitsuai/compute_ai:jdbc-server-33c93b76798e0d0b5474c00ba8a1c32ca44c10ca
+    container_name: jitsuOrchestrator
+    depends_on:
+      - jitsuServer
+      - demoDatasetDownload
+    environment:
+      - GRPC_SERVER_HOST=jitsuServer
+      - GRPC_SERVER_PORT=50051
+      - CONTAINER_NAME=jitsuOrchestrator
+      - JDBC_SERVER_TRANSPORT_MODE=TCP
+      - JDBC_AUTH=PAM
+      - HIVE_SERVER2_IDLE_SESSION_TIMEOUT_SECONDS=${HIVE_SERVER2_IDLE_SESSION_TIMEOUT_SECONDS}
+      - HIVE_SERVER2_SESSION_CHECK_INTERVAL_SECONDS=${HIVE_SERVER2_SESSION_CHECK_INTERVAL_SECONDS}
+      - JEC_INSTANCE_CHECK_INTERVAL_SECONDS=${JEC_INSTANCE_CHECK_INTERVAL_SECONDS}
+      - JDBC_AUTH=PASSWORD
+      - JDBC_PASSWORD=${JDBC_PASSWORD}
+      - JDBC_PORT=10000
+      - DASHBOARD_PORT=8080
+      - WAREHOUSE_LOCATION=${JEC_WAREHOUSE_LOCATION}
+      - METASTORE_LOCATION=${JEC_METASTORE_LOCATION}
+      - JEC_UNIQUE_TAG_VALUE=${JEC_UNIQUE_TAG_VALUE}
+      - SPARK_LOG_DIR=/opt/jitsu/logs
+      - ENABLE_CACHING=${ENABLE_CACHING}
+      - CACHE_CLUSTER_ID=${CACHE_CLUSTER_ID}
+      - CACHE_EXPIRY_TIME=${CACHE_EXPIRY_TIME}
+      - MAX_CACHE_RESULT_SET_SIZE_MB=${MAX_CACHE_RESULT_SET_SIZE_MB}
+      - JITSU_CUSTOMER_ID=${JITSU_CUSTOMER_ID}
+      - JITSU_CUSTOMER_ATTRIBUTE=${JITSU_CUSTOMER_ATTRIBUTE}
+      - JEC_ORCHESTRATOR_INSTANCE_TYPE=${JEC_ORCHESTRATOR_INSTANCE_TYPE}
+      - MAX_SESSIONS_PER_NODE=${MAX_SESSIONS_PER_NODE}
+      - PERCENT_MEMROY_TO_ALLOCATE_TO_SPARK_DRIVER=90
+      - GET_SESSION_TIMEOUT_SECONDS=${GET_SESSION_TIMEOUT_SECONDS}
+    expose:
+      - 10000
+      - 8080
+    ports:
+      - "10000:10000"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/jitsu/jitsu-metastore:/tmp/jitsu-metastore
+      - /opt/jitsu/jitsu-warehouse:/tmp/jitsu-warehouse
+      - /opt/jitsu/logs/:/opt/jitsu/logs/
+      - ./dataset:/dataset
+    networks:
+      - computeai
+
+  demoDatasetDownload:
+    image: node:14-alpine
+    entrypoint: ["/bin/sh","-c"]
+    volumes:
+      - ./dataset:/dataset/
+    command:
+      - |
+        echo "Install AWS CLI"
+        apk update
+        apk add python3 py3-pip groff less openssl ca-certificates
+        pip3 install awscli
+        aws --version
+        echo "Download TPCH & TPCDS SF1 dataset"
+        mkdir -p /dataset/tpch/sf1
+        aws s3 cp s3://jitsuai-public-datasets/tpch/sf1/ /dataset/tpch/sf1 --recursive
+        mkdir -p /dataset/tpcds/sf1
+        aws s3 cp s3://jitsuai-public-datasets/tpcds/sf1/ /dataset/tpcds/sf1 --recursive

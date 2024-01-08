@@ -1,0 +1,9 @@
+dbt-spark
+dbt-spark[PyHive]
+jupyter-spark
+mapboxgl
+PyHive
+seaborn
+thrift
+thrift-sasl
+timestring
