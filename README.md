@@ -23,7 +23,7 @@ Please note, this is just a single node containerized deployment. If you'd like 
 - [ComputeAI with Jupyter Notebook](https://github.com/ComputeAI/computeAI-integrations/tree/main/jupyter/README.md)
 - [ComputeAI with Superset](https://github.com/ComputeAI/computeAI-integrations/tree/main/superset/README.md)
 - [ComputeAI with DBT](https://github.com/ComputeAI/computeAI-integrations/tree/main/dbt/README.md)
-- [ComputeAI with Superset](https://github.com/ComputeAI/computeAI-integrations/tree/main/airflow/README.md)
+- [ComputeAI with Airflow](https://github.com/ComputeAI/computeAI-integrations/tree/main/airflow/README.md)
 
 ## ComputeAI in a nutshell
 
