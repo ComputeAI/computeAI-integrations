@@ -2,6 +2,12 @@
 
 This integrates ComputeAI with DBT
 
+<div align="left">
+      <a href="https://www.youtube.com/watch?v=KL6oXG6FiZg">
+         <img src="https://img.youtube.com/vi/KL6oXG6FiZg/0.jpg" style="width:50%;">
+      </a>
+</div>
+
 ## Install Docker on your machine
 
 https://docs.docker.com/engine/install/
