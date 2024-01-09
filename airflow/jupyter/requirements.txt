@@ -2,6 +2,7 @@ dbt-spark
 dbt-spark[PyHive]
 jupyter-spark
 mapboxgl
+PyGWalker
 PyHive
 seaborn
 thrift

@@ -3,6 +3,7 @@ dbt-spark[PyHive]
 jupyter-spark
 mapboxgl
 PyHive
+PyGWalker
 seaborn
 thrift
 thrift-sasl
