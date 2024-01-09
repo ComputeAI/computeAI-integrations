@@ -21,12 +21,18 @@ docker compose up -d
 
 ## Connect to ComputeAI Orchestrator
 
-To connect to ComputeAI Orchestrator JDBC endpoint,
+- To connect to ComputeAI Orchestrator JDBC endpoint,
 
 ```{bash}
 JDBC URL: jdbc:hive2://<Host URL>:10000/default
 username: computeai
 password: infinite-scale
+```
+
+- To connect to ComputeAI Orchestrator dashboard,
+
+```{bash}
+ComputeAI Orchestrator dashboard URI: http://<Host URL>:8080
 ```
 
 ## Running DBT jobs
