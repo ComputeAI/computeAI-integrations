@@ -1,0 +1,20 @@
+{
+    "System": {
+      "MaxSessionsPerSLACtx": 16,
+      "LogLevel": "Info",
+      "MINIO_ACCESS_KEY": "computeai",
+      "MINIO_SECRET_KEY": "infinite-scale",
+      "MINIO_END_POINT": "http://minio:9000",
+      "MINIO_ENVS": true
+    },
+    "Hypervisor": {
+      "HypervisorMemoryInBytes": 104857600,
+      "UseMaxCores": 1,
+      "PageSz": 4096
+    },
+    "DefaultSLA": {
+      "UseNormalFsAPIs": true,
+      "PageBatchSz": 262144,
+      "PageSz": 1048576
+    }
+}

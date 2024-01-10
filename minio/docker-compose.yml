@@ -1,0 +1,155 @@
+version: '3.3'
+
+services:
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_storage:/data
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    command: server --console-address ":9001" /data
+
+  mc:
+    image: minio/mc
+    depends_on:
+      - demoDatasetDownload
+      - minio
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    volumes:
+      - ./dataset:/dataset
+    entrypoint: >
+      /bin/sh -c '
+      echo "Create default computeai-demo bucket and upload the TPCH SF1 to minio";
+      /usr/bin/mc config host add s3 http://minio:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD --api S3v4;
+      [[ ! -z "`/usr/bin/mc ls s3 | grep computeai-demo`" ]] || /usr/bin/mc mb s3/computeai-demo;
+      /usr/bin/mc policy set download s3/computeai-demo;
+      while [ ! -d /dataset/tpch ]; do echo "Waiting for the directory to exist..."; sleep 1; done;
+      /usr/bin/mc cp --recursive /dataset/tpch s3/computeai-demo/;
+      while [ ! -d /dataset/tpcds ]; do echo "Waiting for the directory to exist..."; sleep 1; done;
+      /usr/bin/mc cp --recursive /dataset/tpcds s3/computeai-demo/;
+      exit 0;
+      '
+
+  notebook:
+    container_name: jupyterNotebook
+    depends_on:
+      - jitsuOrchestrator
+    labels:
+      description: Intel Python 2 using Jupyter Notebooks
+      name: jupyter notebook 
+    ports:
+      - "8888:8888"
+    volumes:
+      - ~/notebooks:/home/notebooks
+    build: . 
+    command: jupyter notebook --NotebookApp.token='infinite-scale'
+
+  jitsuServer:
+    image: jitsuai/compute_ai:jitsu-server-33c93b76798e0d0b5474c00ba8a1c32ca44c10ca
+    container_name: jitsuServer
+    depends_on:
+      - demoDatasetDownload
+    ulimits:
+      nofile: 1048576
+      memlock: -1
+      core: 0
+    expose:
+      - 50051
+    ports:
+      - "50051:50051"
+    environment:
+      - MINIO_ENV=${MINIO_ENV}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_END_POINT=${MINIO_END_POINT}
+      - JITSU_SWAP_PATH=${JITSU_SWAP_PATH}
+      - JITSU_SERVER_BUILD=${JITSU_SERVER_BUILD}
+      - CONTAINER_NAME=jitsuServer
+      - TERMINFO=/usr/share/terminfo # To be able to run jitsu_top.py from within the container
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp=unconfined
+    volumes:
+      - ./jitsuServerConfig/jitsuServer/jitsuServerConfig.json:/opt/jitsu/jitsuServer.json
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/jitsu/jitsu-warehouse:/tmp/jitsu-warehouse
+      - /opt/jitsu/logs/:/opt/jitsu/logs/
+      - ./dataset:/dataset
+
+  jitsuOrchestrator:
+    image: jitsuai/compute_ai:jdbc-server-33c93b76798e0d0b5474c00ba8a1c32ca44c10ca
+    container_name: jitsuOrchestrator
+    depends_on:
+      - jitsuServer
+      - demoDatasetDownload
+    environment:
+      - GRPC_SERVER_HOST=jitsuServer
+      - GRPC_SERVER_PORT=50051
+      - CONTAINER_NAME=jitsuOrchestrator
+      - JDBC_SERVER_TRANSPORT_MODE=TCP
+      - JDBC_AUTH=PAM
+      - HIVE_SERVER2_IDLE_SESSION_TIMEOUT_SECONDS=${HIVE_SERVER2_IDLE_SESSION_TIMEOUT_SECONDS}
+      - HIVE_SERVER2_SESSION_CHECK_INTERVAL_SECONDS=${HIVE_SERVER2_SESSION_CHECK_INTERVAL_SECONDS}
+      - JEC_INSTANCE_CHECK_INTERVAL_SECONDS=${JEC_INSTANCE_CHECK_INTERVAL_SECONDS}
+      - JDBC_AUTH=PASSWORD
+      - JDBC_PASSWORD=${JDBC_PASSWORD}
+      - JDBC_PORT=10000
+      - DASHBOARD_PORT=8080
+      - MINIO_ENABLED=true
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_END_POINT=${MINIO_END_POINT}
+      - WAREHOUSE_LOCATION=${JEC_WAREHOUSE_LOCATION}
+      - METASTORE_LOCATION=${JEC_METASTORE_LOCATION}
+      - JEC_UNIQUE_TAG_VALUE=${JEC_UNIQUE_TAG_VALUE}
+      - SPARK_LOG_DIR=/opt/jitsu/logs
+      - ENABLE_CACHING=${ENABLE_CACHING}
+      - CACHE_CLUSTER_ID=${CACHE_CLUSTER_ID}
+      - CACHE_EXPIRY_TIME=${CACHE_EXPIRY_TIME}
+      - MAX_CACHE_RESULT_SET_SIZE_MB=${MAX_CACHE_RESULT_SET_SIZE_MB}
+      - JITSU_CUSTOMER_ID=${JITSU_CUSTOMER_ID}
+      - JITSU_CUSTOMER_ATTRIBUTE=${JITSU_CUSTOMER_ATTRIBUTE}
+      - JEC_ORCHESTRATOR_INSTANCE_TYPE=${JEC_ORCHESTRATOR_INSTANCE_TYPE}
+      - MAX_SESSIONS_PER_NODE=${MAX_SESSIONS_PER_NODE}
+      - PERCENT_MEMROY_TO_ALLOCATE_TO_SPARK_DRIVER=90
+      - GET_SESSION_TIMEOUT_SECONDS=${GET_SESSION_TIMEOUT_SECONDS}
+    expose:
+      - 10000
+      - 8080
+    ports:
+      - "10000:10000"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/jitsu/jitsu-metastore:/tmp/jitsu-metastore
+      - /opt/jitsu/jitsu-warehouse:/tmp/jitsu-warehouse
+      - /opt/jitsu/logs/:/opt/jitsu/logs/
+      - ./dataset:/dataset
+
+  demoDatasetDownload:
+    image: node:14-alpine
+    entrypoint: ["/bin/sh","-c"]
+    volumes:
+      - ./dataset:/dataset/
+    command:
+      - |
+        echo "Install AWS CLI"
+        apk update
+        apk add python3 py3-pip groff less openssl ca-certificates
+        pip3 install awscli
+        aws --version
+        echo "Download TPCH & TPCDS SF1 dataset"
+        mkdir -p /dataset/tpch/sf1
+        aws s3 cp s3://jitsuai-public-datasets/tpch/sf1/ /dataset/tpch/sf1 --recursive
+        mkdir -p /dataset/tpcds/sf1
+        aws s3 cp s3://jitsuai-public-datasets/tpcds/sf1/ /dataset/tpcds/sf1 --recursive
+
+volumes:
+  minio_storage: {}
