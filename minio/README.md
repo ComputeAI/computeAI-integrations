@@ -2,6 +2,12 @@
 
 This integrates ComputeAI with MinIO
 
+<div align="left">
+      <a href="https://www.youtube.com/watch?v=46W8kbiaTTw">
+         <img src="https://img.youtube.com/vi/46W8kbiaTTw/0.jpg" style="width:50%;">
+      </a>
+</div>
+
 ## Install Docker on your machine
 
 https://docs.docker.com/engine/install/
