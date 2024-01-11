@@ -40,7 +40,7 @@ ComputeAI Orchestrator dashboard URI: http://<Host URL>:8080
 - To connect to MinIO endpoint,
 
 ```{bash}
-JDBC URL: jdbc:hive2://<Host URL>:9000/default
+MinIO URL: http://<Host URL>:9000
 username: computeai
 password: infinite-scale
 ```
