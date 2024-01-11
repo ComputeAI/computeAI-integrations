@@ -44,6 +44,7 @@ Simply download the container, develop using GBs of data, and run 1000s of concu
 ## Join the ComputeAI Community
 
 - Be part of the conversation in the [ComputeAI Community Discord](https://discord.gg/wemNjP3tUd)
+- [Check out our YouTube channel!](https://www.youtube.com/@Compute_ai)
 
 ## Reporting bugs and contributing code
 
