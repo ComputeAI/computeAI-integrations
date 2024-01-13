@@ -1,0 +1,18 @@
+{
+    "System": {
+      "MaxSessionsPerSLACtx": 16,
+      "LogLevel": "Info",
+      "HDFS_ENVS": true,
+      "HDFS_URI": "hdfs://namenode:9000"
+    },
+    "Hypervisor": {
+      "HypervisorMemoryInBytes": 104857600,
+      "UseMaxCores": 1,
+      "PageSz": 4096
+    },
+    "DefaultSLA": {
+      "UseNormalFsAPIs": true,
+      "PageBatchSz": 262144,
+      "PageSz": 1048576
+    }
+}

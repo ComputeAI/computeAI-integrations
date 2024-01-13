@@ -1,0 +1,8 @@
+mapboxgl
+seaborn
+timestring
+jupyter-spark
+thrift-sasl
+thrift
+PyHive
+PyGWalker

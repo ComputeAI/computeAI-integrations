@@ -1,12 +1,6 @@
-# Jupyter Notebook integration
+# HDFS integration
 
-This integrates ComputeAI with Jupyter Notebook
-
-<div align="left">
-      <a href="https://www.youtube.com/watch?v=Va-O-G0bNzg">
-         <img src="https://img.youtube.com/vi/Va-O-G0bNzg/0.jpg" style="width:50%;">
-      </a>
-</div>
+This integrates ComputeAI with HDFS
 
 ## Install Docker on your machine
 
@@ -41,6 +35,14 @@ password: infinite-scale
 ComputeAI Orchestrator dashboard URI: http://<Host URL>:8080
 ```
 
+## Connect to HDFS UI
+
+- To connect to HDFS UI,
+
+```{bash}
+HDFS UI URL: http://<Host URL>:9870
+```
+
 ## Connect to Jupyter notebook
 
 To connect to Juputer notebook, 
@@ -54,16 +56,24 @@ password: infinite-scale
 
 - tpchDemo
 
-Has all 22 TPCH queries for SF1 dataset in a public S3 bucket.
+Has all 22 TPCH queries for SF1 dataset in a S3 bucket.
 
 - tpchFileDatasetDemo
 
 Has all 22 TPCH queries for SF1 dataset in a filesystem.
 
+- tpchHdfsDatasetDemo
+
+Has all 22 TPCH queries for SF1 dataset in a HDFS filesystem.
+
 - tpcdsDemo
 
-Has all 99 TPCDS queries for SF1 dataset in a public S3 bucket. 
+Has all 99 TPCDS queries for SF1 dataset in a S3 bucket.
 
 - tpcdsFileDatasetDemo
 
 Has all 99 TPCDS queries for SF1 dataset in a filesystem.
+
+- tpcdsHdfsDatasetDemo
+
+Has all 99 TPCDS queries for SF1 dataset in a HDFS filesystem.

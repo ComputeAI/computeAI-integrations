@@ -12,21 +12,28 @@ cd /usr/app \
 # Undo exit on errors
 set +e
 
-# Wait until Orchestrator is up
-sleepDuration = 30
-timeout = 300
-elapsedTime = 0
+# Define variables with consistent naming
+sleep_duration=60
+timeout=600
+elapsed_time=0
 
-while [ $elapsedTime -lt $timeout ]; do
-    echo "Sleeping for $sleep_duration seconds..."
-    sleep $sleepDuration
-    cd /usr/app/computeai
-    dbt debug
+while (( elapsed_time < timeout )); do
+  echo "Sleeping for $sleep_duration seconds..."
+  sleep $sleep_duration
 
-    # Check the exit status of the command
-    if [ $? -eq 0 ]; then
-        break
-    fi
+  # Change directory within the loop to ensure correct context
+  cd /usr/app/computeai
+
+  # Execute dbt debug command
+  dbt debug
+
+  # Check exit status and break loop if successful
+  if [[ $? -eq 0 ]]; then
+    break
+  fi
+
+  # Increment elapsed time using concise syntax
+  (( elapsed_time += sleep_duration ))
 done
 
 tail -f /dev/null  # Wait indefinitely

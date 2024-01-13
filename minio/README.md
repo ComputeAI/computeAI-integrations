@@ -43,10 +43,10 @@ ComputeAI Orchestrator dashboard URI: http://<Host URL>:8080
 
 ## Connect to MinIO
 
-- To connect to MinIO endpoint,
+- To connect to MinIO UI,
 
 ```{bash}
-MinIO URL: http://<Host URL>:9000
+MinIO UI URL: http://<Host URL>:9000
 username: computeai
 password: infinite-scale
 ```
@@ -66,7 +66,7 @@ password: infinite-scale
 
 Has all 22 TPCH queries for SF1 dataset in a MinIO S3 bucket.
 
-- tpchFileDataset
+- tpchFileDatasetDemo
 
 Has all 22 TPCH queries for SF1 dataset in a filesystem.
 
@@ -74,6 +74,6 @@ Has all 22 TPCH queries for SF1 dataset in a filesystem.
 
 Has all 99 TPCDS queries for SF1 dataset in a MinIO S3 bucket.
 
-- tpcdsFileDataset
+- tpcdsFileDatasetDemo
 
 Has all 99 TPCDS queries for SF1 dataset in a filesystem.
