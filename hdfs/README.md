@@ -2,6 +2,12 @@
 
 This integrates ComputeAI with HDFS
 
+<div align="left">
+      <a href="https://www.youtube.com/watch?v=I7nLltfJgz0">
+         <img src="https://img.youtube.com/vi/I7nLltfJgz0/0.jpg" style="width:50%;">
+      </a>
+</div>
+
 ## Install Docker on your machine
 
 https://docs.docker.com/engine/install/
