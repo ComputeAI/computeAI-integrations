@@ -6,3 +6,4 @@ thrift-sasl
 thrift
 PyHive
 PyGWalker
+scikit-learn
