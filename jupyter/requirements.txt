@@ -7,3 +7,5 @@ thrift
 PyHive
 PyGWalker
 scikit-learn
+boto3
+tabulate
