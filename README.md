@@ -26,6 +26,7 @@ Please note, this is just a single node containerized deployment. If you'd like 
 - [ComputeAI with Airflow](https://github.com/ComputeAI/computeAI-integrations/tree/main/airflow/README.md)
 - [ComputeAI with MinIO](https://github.com/ComputeAI/computeAI-integrations/tree/main/minio/README.md)
 - [ComputeAI with HDFS](https://github.com/ComputeAI/computeAI-integrations/tree/main/hdfs/README.md)
+- [ComputeAI with Qlik](https://github.com/ComputeAI/computeAI-integrations/tree/main/qlik/README.md)
 
 ## ComputeAI in a nutshell
 

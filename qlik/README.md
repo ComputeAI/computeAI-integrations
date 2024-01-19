@@ -39,9 +39,14 @@ ComputeAI Orchestrator dashboard URI: http://<Host URL>:8080
 
 - Use "Data connection" to discover "Apache Spark" in "Data sources".
 - Fill in the following fields.
-  - Host name: <Host URL>
-  - Port: 10000
-  - Database: default
+
+```{bash}
+Host name: <Host URL>
+Port: 10000
+Database: default
+Username: computeai
+Password: infinite-scale
+```
 
 ## Connect to Jupyter notebook
 
