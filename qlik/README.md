@@ -2,6 +2,12 @@
 
 This integrates ComputeAI with Qlik
 
+<div align="left">
+      <a href="https://www.youtube.com/watch?v=xnTSteGytb4">
+         <img src="https://img.youtube.com/vi/xnTSteGytb4/0.jpg" style="width:50%;">
+      </a>
+</div>
+
 ## Install Docker on your machine
 
 https://docs.docker.com/engine/install/
