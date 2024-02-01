@@ -17,12 +17,12 @@ https://docs.docker.com/engine/install/
 First build the container, adjusting python requirements as necessary
 
 ```{bash}
-docker compose build
+docker-compose build
 ```
 
 Then run the ComputeAI
 ```{bash}
-docker compose up -d
+docker-compose up -d
 ```
 
 ## Connect to ComputeAI Orchestrator
