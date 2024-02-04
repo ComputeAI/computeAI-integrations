@@ -131,7 +131,7 @@ services:
       - computeai
 
   jitsuServer:
-    image: jitsuai/compute_ai:jitsu-server-781e40ef64a35aaf43b4c01ee2ef49357f534c43
+    image: jitsuai/compute_ai:jitsu-server-74f494f4f9fb378e96e26d82c6fe1bc03309bf64
     container_name: jitsuServer
     depends_on:
       - demoDatasetDownload
@@ -162,7 +162,7 @@ services:
       - computeai
 
   jitsuOrchestrator:
-    image: jitsuai/compute_ai:jdbc-server-781e40ef64a35aaf43b4c01ee2ef49357f534c43
+    image: jitsuai/compute_ai:jdbc-server-74f494f4f9fb378e96e26d82c6fe1bc03309bf64
     container_name: jitsuOrchestrator
     depends_on:
       - jitsuServer
