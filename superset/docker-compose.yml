@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   jitsuServer:
-    image: jitsuai/compute_ai:jitsu-server-74f494f4f9fb378e96e26d82c6fe1bc03309bf64
+    image: jitsuai/compute_ai:jitsu-server-1fa98a674bd35dd82f85a57f6b006f3e70853021
     container_name: jitsuServer
     depends_on:
       - demoDatasetDownload
@@ -31,7 +31,7 @@ services:
       - ./dataset:/dataset
 
   jitsuOrchestrator:
-    image: jitsuai/compute_ai:jdbc-server-74f494f4f9fb378e96e26d82c6fe1bc03309bf64
+    image: jitsuai/compute_ai:jdbc-server-1fa98a674bd35dd82f85a57f6b006f3e70853021
     container_name: jitsuOrchestrator
     depends_on:
       - jitsuServer
