@@ -43,6 +43,13 @@ Value prop:
 
 Simply download the container, develop using GBs of data, and run 1000s of concurrent jobs with TBs of data. There is no management or tuning needed. ComputeAI runs reliably and unattended like an OS.
 
+## Notes
+
+When deploying on AWS instances, it is essential to properly configure the Instance Metadata Service (IMDS) settings. Specifically, ensure that IMDSv2 is set to "optional" rather than "required." This configuration is crucial because queries attempting to access Amazon S3 services may fail if IMDSv2 is enforced as mandatory.
+
+<img width="663" alt="Screenshot 2024-03-07 at 2 18 18 PM" src="https://github.com/ComputeAI/computeAI-integrations/assets/76465839/eff0f0e6-f46b-4d05-aeef-3706d565b0c0">
+
+
 ## Join the ComputeAI Community
 
 - Be part of the conversation in the [ComputeAI Community Discord](https://discord.gg/wemNjP3tUd)
