@@ -45,7 +45,8 @@ Simply download the container, develop using GBs of data, and run 1000s of concu
 
 ## Notes
 
-When deploying on AWS instances, it is essential to properly configure the Instance Metadata Service (IMDS) settings. Specifically, ensure that IMDSv2 is set to "optional" rather than "required." This configuration is crucial because queries attempting to access Amazon S3 services may fail if IMDSv2 is enforced as mandatory.
+We currently do not support IMDSv2. As a result, when configuring AWS instances, it's crucial to set IMDSv2 as "optional." This ensures that the application can access Amazon S3 services without issues. We are aware of the importance and benefits of IMDSv2 and are actively working to update our application for compatibility. Until then, please ensure that your AWS instance metadata settings are appropriately configured (as shown below).
+
 
 <img width="663" alt="Screenshot 2024-03-07 at 2 18 18 PM" src="https://github.com/ComputeAI/computeAI-integrations/assets/76465839/eff0f0e6-f46b-4d05-aeef-3706d565b0c0">
 
