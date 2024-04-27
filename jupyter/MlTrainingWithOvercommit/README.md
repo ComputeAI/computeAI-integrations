@@ -3,8 +3,8 @@
 Here is a short demo of ML Training with Memory Overcommit.
 
 <div align="left">
-      <a href="https://www.youtube.com/watch?v=kNOsgbVeMV0">
-         <img src="https://img.youtube.com/vi/kNOsgbVeMV0/0.jpg" style="width:50%;">
+      <a href="https://www.youtube.com/watch?v=bm2MUAFW2nk">
+         <img src="https://img.youtube.com/vi/bm2MUAFW2nk/0.jpg" style="width:50%;">
       </a>
 </div>
 
