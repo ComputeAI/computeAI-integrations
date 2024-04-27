@@ -3,8 +3,8 @@
 This integrates ComputeAI with Airflow
 
 <div align="left">
-      <a href="https://www.youtube.com/watch?v=QhVbRgk1RaE">
-         <img src="https://img.youtube.com/vi/QhVbRgk1RaE/0.jpg" style="width:50%;">
+      <a href="https://www.youtube.com/watch?v=0hO7sN9GdwE">
+         <img src="https://img.youtube.com/vi/0hO7sN9GdwE/0.jpg" style="width:50%;">
       </a>
 </div>
 
