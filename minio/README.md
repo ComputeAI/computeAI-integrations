@@ -3,8 +3,8 @@
 This integrates ComputeAI with MinIO
 
 <div align="left">
-      <a href="https://www.youtube.com/watch?v=46W8kbiaTTw">
-         <img src="https://img.youtube.com/vi/46W8kbiaTTw/0.jpg" style="width:50%;">
+      <a href="https://www.youtube.com/watch?v=Mo8F99UzHrs">
+         <img src="https://img.youtube.com/vi/Mo8F99UzHrs/0.jpg" style="width:50%;">
       </a>
 </div>
 
