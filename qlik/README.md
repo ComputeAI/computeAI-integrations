@@ -3,8 +3,8 @@
 This integrates ComputeAI with Qlik
 
 <div align="left">
-      <a href="https://www.youtube.com/watch?v=xnTSteGytb4">
-         <img src="https://img.youtube.com/vi/xnTSteGytb4/0.jpg" style="width:50%;">
+      <a href="https://www.youtube.com/watch?v=asiIuKuQBXQ">
+         <img src="https://img.youtube.com/vi/asiIuKuQBXQ/0.jpg" style="width:50%;">
       </a>
 </div>
 
