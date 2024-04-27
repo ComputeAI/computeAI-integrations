@@ -3,8 +3,8 @@
 This integrates ComputeAI with HDFS
 
 <div align="left">
-      <a href="https://www.youtube.com/watch?v=I7nLltfJgz0">
-         <img src="https://img.youtube.com/vi/I7nLltfJgz0/0.jpg" style="width:50%;">
+      <a href="https://www.youtube.com/watch?v=cIfciVm8D8M">
+         <img src="https://img.youtube.com/vi/cIfciVm8D8M/0.jpg" style="width:50%;">
       </a>
 </div>
 
