@@ -1,0 +1,28 @@
+services:
+  jitsuServer:
+    image: jitsuai/compute_ai:jitsu-server-${GIT_SHA}
+    container_name: jitsuServer
+    restart: always
+    ulimits:
+      nofile: 1048576
+      memlock: -1
+      core: 0
+    ports:
+      - "50051:50051"
+    expose:
+      - 50051
+    environment:
+      - JITSU_SWAP_PATH=${JITSU_SWAP_PATH}
+      - JITSU_SERVER_BUILD=${JITSU_SERVER_BUILD}
+      - CONTAINER_NAME=jitsuServer
+      - MaxSessionsPerSLACtx=${MAX_SESSIONS_PER_NODE}
+      - TERMINFO=/usr/share/terminfo # To be able to run jitsu_top.py from within the container
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp=unconfined
+    volumes:
+      - ../config/jitsuServerConfig.json:/opt/jitsu/jitsuServer.json
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/jitsu/jitsu-warehouse:${WAREHOUSE_LOCATION}
+      - /opt/jitsu/logs/:/opt/jitsu/logs/

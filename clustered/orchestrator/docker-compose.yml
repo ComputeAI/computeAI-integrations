@@ -1,0 +1,69 @@
+services:
+  jupyternotebook:
+    image: jitsuai/compute_ai:jupyter-notebook
+    container_name: jupyter-notebook
+    depends_on:
+      - jitsuOrchestrator
+    labels:
+      description: Intel Python 2 using Jupyter Notebooks
+      name: jupyter notebook
+    expose:
+      - 8888 
+    ports:
+      - "8888:8888"
+    volumes:
+      - ~/notebooks:/home/notebooks
+    command: jupyter notebook --NotebookApp.token='infinite-scale'
+
+  jitsuOrchestrator:
+    image: jitsuai/compute_ai:jdbc-server-${GIT_SHA}
+    container_name: jitsuOrchestrator
+    environment:
+      - GRPC_SERVER_PORT=50051
+      - HIVE_SERVER2_IDLE_SESSION_TIMEOUT_SECONDS=${HIVE_SERVER2_IDLE_SESSION_TIMEOUT_SECONDS}
+      - HIVE_SERVER2_SESSION_CHECK_INTERVAL_SECONDS=${HIVE_SERVER2_SESSION_CHECK_INTERVAL_SECONDS}
+      - JEC_INSTANCE_CHECK_INTERVAL_SECONDS=${JEC_INSTANCE_CHECK_INTERVAL_SECONDS}
+      - JDBC_AUTH=PASSWORD
+      - CONTAINER_NAME=jitsuOrchestrator
+      - JDBC_PORT=10000
+      - DASHBOARD_PORT=8080
+      - JDBC_PASSWORD=${JDBC_PASSWORD}
+      - GRPC_CONNECTION_MAX_RETRIES=${GRPC_CONNECTION_MAX_RETRIES}
+      - GRPC_CONNECTION_RETRY_SLEEP=${GRPC_CONNECTION_RETRY_SLEEP}
+      - JEC_CLUSTER_NAME=${JEC_CLUSTER_NAME}
+      - JEC_MIN_ELASTIC_CLUSTER_NODES=${JEC_MIN_ELASTIC_CLUSTER_NODES}
+      - JEC_MAX_ELASTIC_CLUSTER_NODES=${JEC_MAX_ELASTIC_CLUSTER_NODES}
+      - MAX_SESSIONS_PER_NODE=${MAX_SESSIONS_PER_NODE}
+      - JEC_SUBNET_ID=${JEC_SUBNET_ID}
+      - JEC_JITSU_SERVER_INSTANCE_TYPE=${JEC_JITSU_SERVER_INSTANCE_TYPE}
+      - JEC_ORCHESTRATOR_INSTANCE_TYPE=${JEC_ORCHESTRATOR_INSTANCE_TYPE}
+      - JEC_JITSU_SERVER_INSTANCE_AMI=${JEC_JITSU_SERVER_INSTANCE_AMI}
+      - JEC_JITSU_SERVER_SECURITY_GROUP_ID=${JEC_JITSU_SERVER_SECURITY_GROUP_ID}
+      - JEC_JITSU_SERVER_IAM_INSTANCE_PROFILE_NAME=${JEC_JITSU_SERVER_IAM_INSTANCE_PROFILE_NAME}
+      - JEC_JITSU_SERVER_IAM_INSTANCE_KEY_PAIR=${JEC_JITSU_SERVER_IAM_INSTANCE_KEY_PAIR}
+      - JEC_DEPLOYMENT=true
+      - WAREHOUSE_LOCATION=${WAREHOUSE_LOCATION}
+      - METASTORE_LOCATION=${METASTORE_LOCATION}
+      - JEC_UNIQUE_TAG_VALUE=${JEC_UNIQUE_TAG_VALUE}
+      - SPARK_LOG_DIR=/opt/jitsu/logs
+      - EFS_FILE_SYSTEM_ID=${EFS_FILE_SYSTEM_ID}
+      - ENABLE_CACHING=${ENABLE_CACHING}
+      - CACHE_CLUSTER_ID=${CACHE_CLUSTER_ID}
+      - CACHE_EXPIRY_TIME=${CACHE_EXPIRY_TIME}
+      - MAX_CACHE_RESULT_SET_SIZE_MB=${MAX_CACHE_RESULT_SET_SIZE_MB}
+      - JITSU_CUSTOMER_ID=${JITSU_CUSTOMER_ID}
+      - JITSU_CUSTOMER_ATTRIBUTE=${JITSU_CUSTOMER_ATTRIBUTE}
+      - PERCENT_MEMROY_TO_ALLOCATE_TO_SPARK_DRIVER=90
+      - GET_SESSION_TIMEOUT_SECONDS=${GET_SESSION_TIMEOUT_SECONDS}
+      - STATIC_IP_LIST=${STATIC_IP_LIST}
+    expose:
+      - 10000
+      - 8080
+    ports:
+      - "10000:10000"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/jitsu/jitsu-metastore:${METASTORE_LOCATION}
+      - /opt/jitsu/jitsu-warehouse:${WAREHOUSE_LOCATION}
+      - /opt/jitsu/logs/:/opt/jitsu/logs/
