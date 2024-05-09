@@ -42,10 +42,11 @@ This guide will walk you through setting up and running a ComputeAI cluster. You
    - Navigate to the `jitsuServer` directory.
    - Start the Jitsu Server using Docker Compose with the `.env` file:
      ```bash
-     cd /path/to/cluster/jitsuServer
+     cd /path/to/dir/jitsuServer
      docker-compose --env-file ../.env up -d
      ```
    - Confirm that the Jitsu Server is up and running on each node.
+   - Ensure that port 50051 is open for communication with the Orchestrator.
 
 4. **Configure `STATIC_IP_LIST`:**
 
@@ -62,10 +63,11 @@ This guide will walk you through setting up and running a ComputeAI cluster. You
    - Navigate to the `orchestrator` directory.
    - Start the Orchestrator service using Docker Compose with the `.env` file:
      ```bash
-     cd /path/to/cluster/orchestrator
+     cd /path/to/dir/orchestrator
      docker-compose --env-file ../.env up -d
      ```
    - Verify that the Orchestrator service is up and managing the Jitsu Server nodes.
+   - Connect to the jupyter notebook on port 8888, and the ComputeAI dashboard on port 8080
 
 ## Final Considerations
 
