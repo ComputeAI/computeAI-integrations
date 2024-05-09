@@ -21,6 +21,7 @@ sudo systemctl enable docker
 sudo systemctl start docker
 
 # Add the current user to the Docker group
+sudo groupadd docker
 sudo usermod -aG docker $USER
 
 # Docker Compose installation (version 2.x as a Docker plugin)
