@@ -34,7 +34,7 @@ This guide will walk you through setting up and running a ComputeAI cluster. You
    Customize the `.env` file to match your specific cluster requirements. Some important parameters include:
    - `STATIC_IP_LIST`: A comma-separated list of IP addresses of the Jitsu Server nodes.
    - `JEC_CLUSTER_NAME`: The cluster name.
-   - `JEC_WAREHOUSE_LOCATION` and `JEC_METASTORE_LOCATION`: Paths where warehouse and metastore data will be stored.
+   - `WAREHOUSE_LOCATION` and `METASTORE_LOCATION`: Paths where warehouse and metastore data will be stored.
 
 3. **Launch Jitsu Server Nodes:**
 
