@@ -54,7 +54,7 @@ We currently do not support IMDSv2. As a result, when configuring AWS instances,
 ## Join the ComputeAI Community
 
 - Be part of the conversation in the [ComputeAI Community Discord](https://discord.gg/wemNjP3tUd)
-- [Check out our YouTube channel!](https://www.youtube.com/@Compute_ai)
+- [Check out our YouTube channel!](https://www.youtube.com/@ComputeA.I.)
 
 ## Reporting bugs and contributing code
 
