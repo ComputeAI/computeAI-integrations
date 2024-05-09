@@ -30,7 +30,7 @@ Please note, this is just a single node containerized deployment. If you'd like 
 
 ## ComputeAI in a nutshell
 
-ComputeAI's creates immense value in the open Spark SQL ecosystem to create unlimited concurrency at [high performance](https://compute.ai/report/compute-vs-aws-emr-spark-benchmark-report/), reliability, and efficiency while reducing cloud infrastructure cost by ~5x.
+ComputeAI's creates immense value in the open Spark SQL ecosystem to create unlimited concurrency at high performance, reliability, and efficiency while reducing cloud infrastructure cost by ~5x.
 
 Value prop:
 - Massive concurrency with unlimited users/queries
