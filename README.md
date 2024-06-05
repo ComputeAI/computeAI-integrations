@@ -14,7 +14,7 @@
 
 In this repo, we have provided a containerized deployment of the ComputeAI SQL engine.
 
-ComputeAI containers work on most versions of Linux including Canonical Ubuntu 22.04 LTS, AmazonLinux 2.
+ComputeAI containers work on most versions of Linux including AmazonLinux 2.
 
 Please note, this is just a single node containerized deployment. If you'd like to play with our elastic cluster, please email us at contact@compute.ai and we'd be happy to help.
 
