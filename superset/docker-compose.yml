@@ -19,11 +19,6 @@ services:
       - JITSU_SERVER_BUILD=${JITSU_SERVER_BUILD}
       - CONTAINER_NAME=jitsuServer
       - TERMINFO=/usr/share/terminfo # To be able to run jitsu_top.py from within the container
-      - AWS_ENVS=${AWS_ENVS}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_REGION=${AWS_REGION}
-      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
     cap_add:
       - SYS_PTRACE
     security_opt:
@@ -68,11 +63,6 @@ services:
       - MAX_SESSIONS_PER_NODE=${MAX_SESSIONS_PER_NODE}
       - PERCENT_MEMROY_TO_ALLOCATE_TO_SPARK_DRIVER=90
       - GET_SESSION_TIMEOUT_SECONDS=${GET_SESSION_TIMEOUT_SECONDS}
-      - AWS_ENVS=${AWS_ENVS}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_REGION=${AWS_REGION}
-      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
     expose:
       - 10000
       - 8080
